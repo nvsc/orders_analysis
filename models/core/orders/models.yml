@@ -1,0 +1,100 @@
+version: 2
+
+models:
+    - name: core_parts_finish_config
+      description: |
+        Information on finish process of order part
+      columns: &core_parts_finish_config_columns
+
+        - name: order_part_id
+          tests:
+            - unique
+        
+        - name: surface_finish
+          description: Surface finish of a part (for SURFACE_FINISH process)
+        
+        - name: secondary_surface_finish
+          description: Secondary surface finish (for SECONDARY_SURFACE_FINISH process)
+
+        - name: ral_finish_code
+          description: RAL code (for SECONDARY_SURFACE_FINISH_RAL process)
+
+        - name: ral_finish_type
+          description: RAL finish (for SECONDARY_SURFACE_FINISH_RAL process)
+
+      tests:
+        - dbt_utils.expression_is_true:
+            expression: |
+                surface_finish IS NOT NULL 
+                OR secondary_surface_finish IS NOT NULL
+                OR (ral_finish_code IS NOT NULL AND ral_finish_type IS NOT NULL)
+
+    - name: core_orders_parts_extended
+      description: |
+        An extended parts table model with the new columns related to finish process
+
+      columns: *core_parts_finish_config_columns
+
+    - name: core_orders_parts_info
+      description: |
+        Statistics of part types for each order
+      
+      columns: &core_orders_parts_info_columns
+
+        - name: order_id
+          tests:
+            - unique
+        
+        - name: total_parts_count
+          description: Parts count (different parts, not total quantity of parts)
+
+        - name: cnc_parts_count
+          description: |
+            CNC parts count for for parts that selected_process_type = cnc_machining 
+            (different parts, not total quantity of parts)
+
+        - name: laser_parts_count
+          description: |
+            Laser parts count for parts that selected_process_type = laser_cutting, laser_tube_cutting 
+            (different parts, not total quantity of parts)
+
+        - name: bended_parts_count
+          description: |
+            Bending parts count for parts that has_bending = 1 
+            (different parts, not total quantity of parts)
+
+        - name: total_bends_count
+          description: |
+            Total bends_count for parts that has_bending = 1
+
+        - name: surface_coated_parts_count
+          description: |
+            Surface coating parts count for parts that has_surface_coating 
+            (different parts, not total quantity of parts)
+
+        - name: insert_operations_parts_count
+          description: |
+            Insert operations parts count for parts that has_insert_operations 
+            (different parts, not total quantity of parts)
+
+        - name: unique_ral_codes
+          description: |
+            All unique RAL codes of an order, joined in a single string
+
+        - name: unique_ral_finishes
+          description: |
+            All unique RAL finishes of an order, joined in a single string
+
+        - name: unique_surface_finishes
+          description: |
+            All unique surface finishes of an order, joined in a single string
+
+        - name: unique_secondary_surface_finishes
+          description: |
+            All unique secondary surface finishes of an order, joined in a single string
+
+    - name: core_orders_extended
+      description: |
+        Extended orders model with information on order parts
+      
+      columns: *core_orders_parts_info_columns

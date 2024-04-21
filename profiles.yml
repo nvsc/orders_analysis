@@ -1,0 +1,11 @@
+default:
+  target: dev_valekseev
+  outputs:
+    dev_valekseev:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('TARGET_PROJECT') }}"
+      schema: "{{ env_var('TARGET_DATASET') }}"
+      threads: 4 # Must be a value of 1 or greater
+      keyfile: "{{ env_var('PATH_TO_ACCOUNT_KEY_JSON') }}"
+      location: europe-west3
