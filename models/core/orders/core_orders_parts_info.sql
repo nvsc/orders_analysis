@@ -30,8 +30,8 @@ parts_count AS (
 unique_ral_finishes AS (
     SELECT 
         order_id,
-        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT ral_finish_code), ',') AS unique_ral_codes,
-        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT ral_finish_type), ',') AS unique_ral_finishes
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT ral_finish_code ORDER BY ral_finish_code), ',') AS unique_ral_codes,
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT ral_finish_type ORDER BY ral_finish_type), ',') AS unique_ral_finishes
     FROM parts
     WHERE ral_finish_code IS NOT NULL
     GROUP BY 1
@@ -39,7 +39,7 @@ unique_ral_finishes AS (
 unique_surface_finishes AS (
     SELECT 
         order_id,
-        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT surface_finish), ',') AS unique_surface_finishes,
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT surface_finish ORDER BY surface_finish), ',') AS unique_surface_finishes,
     FROM parts
     WHERE surface_finish IS NOT NULL
     GROUP BY 1
@@ -47,7 +47,7 @@ unique_surface_finishes AS (
 unique_secondary_surface_finishes AS (
     SELECT 
         order_id,
-        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT secondary_surface_finish), ',') AS unique_secondary_surface_finishes,
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT secondary_surface_finish ORDER BY secondary_surface_finish), ',') AS unique_secondary_surface_finishes,
     FROM parts
     WHERE secondary_surface_finish IS NOT NULL
     GROUP BY 1

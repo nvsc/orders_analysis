@@ -4,13 +4,16 @@ sources:
   - name: orders_source
     schema: "{{ env_var('TARGET_DATASET') }}"
     tables:
+    
       - name: orders
 
       - name: parts
 
       - name: parts_surface_finish_config
 
-  - name: orders_ext
+  - name: orders_upload
     schema: "{{ env_var('TARGET_DATASET') }}"
     tables:
-      - name: "{{ env_var('ORDERS_PART_EXT_TABLE') }}"
+
+      - name: orders_ext
+        identifier: "{{ env_var('ORDERS_PART_EXT_TABLE') }}"
